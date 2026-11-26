@@ -1,7 +1,9 @@
 from __future__ import annotations
 from fastapi import APIRouter
-from app.db import db, rows_to_list, row_to_dict
+
+from app.db import db, rows_to_list
 from app.services.common import RELEASE_SELECT
+from app.services.truth import build_reconcile
 
 router = APIRouter(tags=["总览"])
 
@@ -44,4 +46,36 @@ def overview():
                 """
             ).fetchall()
         )
-        return {"分布": counts, "在途": active, "环境版本": versions, "实例": health}
+
+        # 总览环境分布格：按发版单真源当前环境统计在途/已放行单
+        env_dist_rows = conn.execute(
+            """
+            SELECT e.code AS 环境, e.name AS 环境名,
+                   SUM(CASE WHEN r.status IN ('已入闸','晋升中','已放行','回滚中') THEN 1 ELSE 0 END) AS 在途数,
+                   SUM(CASE WHEN r.status='已放行' THEN 1 ELSE 0 END) AS 已放行数,
+                   COUNT(r.id) AS 单据数
+            FROM environments e
+            LEFT JOIN releases r ON r.current_env_id = e.id
+            GROUP BY e.id
+            ORDER BY e.sort_order
+            """
+        ).fetchall()
+        env_dist = rows_to_list(env_dist_rows)
+        env_counts = {row["环境"]: row["单据数"] for row in env_dist}
+
+        report = build_reconcile(conn)
+
+        return {
+            "分布": counts,
+            "状态分布": counts,
+            "环境分布": env_dist,
+            "环境分布格": env_dist,
+            "按环境分布": env_counts,
+            "在途": active,
+            "环境版本": versions,
+            "实例": health,
+            "真源一致": report["一致"],
+            "对账差额": report["差额"],
+            "差额": report["差额"],
+            "异常单数": sum(1 for d in report["对账明细"] if not d["一致"]),
+        }

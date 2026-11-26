@@ -1,15 +1,16 @@
 from __future__ import annotations
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.db import db, row_to_dict
+
+from app.db import db
 from app.services.common import (
     active_rollback_window,
     audit,
-    get_release,
     now_str,
     set_app_env_version,
     upsert_instance,
 )
+from app.services.truth import release_detail
 
 router = APIRouter(tags=["回滚"])
 
@@ -35,9 +36,12 @@ def rollback(release_id: int, body: RollbackIn):
         now = now_str()
         conn.execute(
             """
-            UPDATE releases SET status='已回滚', rolled_back_at=?, target_version=? WHERE id=?
+            UPDATE releases
+               SET status='已回滚', rolled_back_at=?, target_version=?,
+                   state_rev=state_rev+1, state_advanced_at=?
+             WHERE id=?
             """,
-            (now, body.目标版本, release_id),
+            (now, body.目标版本, now, release_id),
         )
         set_app_env_version(conn, r["app_id"], r["current_env_id"], body.目标版本)
         upsert_instance(conn, r["app_id"], r["current_env_id"], body.目标版本, "探针绿", release_id)
@@ -50,4 +54,4 @@ def rollback(release_id: int, body: RollbackIn):
             (now, r["app_id"], r["current_env_id"], body.目标版本, release_id),
         )
         audit(conn, "回滚", release_id, f"回滚到{body.目标版本}", body.备注)
-        return row_to_dict(get_release(conn, release_id))
+        return release_detail(conn, release_id)

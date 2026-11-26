@@ -58,8 +58,9 @@ def seed_if_empty() -> None:
             """
             INSERT INTO releases(
               serial, app_id, target_version, artifact_digest, status, pipeline_status,
-              current_env_id, canary_ratio, note, created_at, admitted_at
-            ) VALUES (?, ?, ?, ?, '已入闸', '绿', ?, 10, ?, ?, ?)
+              current_env_id, canary_ratio, note, created_at, admitted_at,
+              state_rev, state_advanced_at
+            ) VALUES (?, ?, ?, ?, '已入闸', '绿', ?, 10, ?, ?, ?, 1, ?)
             """,
             (
                 f"发{datetime.now().strftime('%Y%m%d')}0001",
@@ -68,6 +69,7 @@ def seed_if_empty() -> None:
                 "sha256:seed-demo-artifact",
                 envs["测"],
                 "种子可晋升发版单",
+                now,
                 now,
                 now,
             ),

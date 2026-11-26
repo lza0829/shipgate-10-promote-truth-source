@@ -54,7 +54,13 @@ SELECT r.id AS 编号,
        r.created_at AS 申请时间,
        r.admitted_at AS 入闸时间,
        r.released_at AS 放行时间,
-       r.rolled_back_at AS 回滚时间
+       r.rolled_back_at AS 回滚时间,
+       r.state_rev AS state_rev,
+       r.state_rev AS 状态版本,
+       r.state_rev AS 状态修订号,
+       r.state_advanced_at AS state_advanced_at,
+       r.state_advanced_at AS 状态推进时间,
+       r.state_advanced_at AS 状态机推进戳
 FROM releases r
 JOIN apps a ON a.id = r.app_id
 LEFT JOIN environments e ON e.id = r.current_env_id

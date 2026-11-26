@@ -245,3 +245,68 @@ tr:hover td { background: #f2f4f7; }
   }
   .nav { flex-direction: row; flex-wrap: wrap; }
 }
+
+/* ===== 真源一致性 / 详情 / 对账新增样式 ===== */
+.detail-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.detail-head h2 { margin: 0; }
+.detail-head a, .btn-link { color: var(--gate-deep); font-weight: 700; text-decoration: none; }
+.detail-head a:hover, .btn-link:hover { text-decoration: underline; }
+.btn-link { display: inline-block; padding: 0.3rem 0.2rem; }
+
+.ok-msg {
+  background: rgba(42, 143, 110, 0.12);
+  border-left: 4px solid var(--ok);
+  color: #1d6b52;
+  padding: 0.55rem 0.8rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.muted { color: var(--muted); }
+
+.badge {
+  display: inline-block;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.badge.ok { background: rgba(42,143,110,.15); color: var(--ok); }
+.badge.bad { background: rgba(192,57,43,.15); color: var(--danger); }
+.badge.warn { background: rgba(214,137,16,.18); color: #9a6208; }
+.badge.st-已放行 { background: rgba(42,143,110,.18); color: var(--ok); }
+.badge.st-晋升中 { background: rgba(214,137,16,.2); color: #9a6208; }
+.badge.st-已入闸 { background: rgba(52,120,200,.16); color: #1f5fae; }
+.badge.st-待入闸, .badge.st-已关闭 { background: #e2e5ea; color: var(--muted); }
+.badge.st-已回滚, .badge.st-回滚中 { background: rgba(192,57,43,.15); color: var(--danger); }
+
+.stat.stat-ok .n { color: var(--ok); }
+.stat.stat-bad { border: 1px solid rgba(192,57,43,.45); }
+.stat.stat-bad .n { color: var(--danger); }
+
+tr.row-bad td { background: rgba(192,57,43,.07); }
+tr.row-bad:hover td { background: rgba(192,57,43,.12); }
+tr.row-warn td { background: rgba(214,137,16,.08); }
+tr.row-void td { color: var(--muted); text-decoration: line-through; opacity: .7; }
+tr.row-void td:last-child { text-decoration: none; }
+
+.diff-box {
+  border: 1px solid rgba(192,57,43,.4);
+  background: rgba(192,57,43,.06);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0 1.2rem;
+}
+.diff-box h3 { margin-top: 0; color: var(--danger); }
+.diff-box ul { margin: 0.4rem 0 0.8rem; padding-left: 1.2rem; display: grid; gap: 0.35rem; }
+
+table.kv { margin: 0.8rem 0 1.2rem; }
+table.kv th { width: 110px; background: #eef1f5; }
+table.kv td { width: 32%; }
+
+.actions-cell { white-space: nowrap; }
+.audit-filters { align-items: flex-end; }
+.audit-filters label { display: flex; flex-direction: column; gap: .25rem; font-size: .85rem; }
+label.check { flex-direction: row !important; align-items: center; gap: .4rem; }
+.roster-ver { font-weight: 700; }
